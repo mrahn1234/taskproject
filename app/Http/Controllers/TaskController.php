@@ -17,7 +17,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::all();
+        $itemForPage = 5;
+        $tasks = Task::paginate($itemForPage);
         return view('tasks.index', compact('tasks'));
     }
 
@@ -39,7 +40,6 @@ class TaskController extends Controller
      */
     public function store(StoreTask $request)
     {
-        
         $request->user()->tasks()->create([
             'name' => $request->name,
         ]);
@@ -78,13 +78,13 @@ class TaskController extends Controller
      */
     public function update(StoreTask $request, Task $task)
     {
-        
+
         $this->authorize('update', $task);
-        
+
         $task->name = $request->name;
         $task->save();
 
-        return redirect('tasks');  
+        return redirect('tasks');
 
     }
 
@@ -98,7 +98,6 @@ class TaskController extends Controller
     {
         $this->authorize('destroy', $task); #kierm tra authorize hay k
         $task->delete();
-        
         return response()->json([
             'message' => 'Data deleted successfully!',
         ], 200);
