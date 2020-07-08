@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreTask;
+
+use App\Task;
+use App\User;
 
 class TaskController extends Controller
 {
@@ -13,7 +17,8 @@ class TaskController extends Controller
      */
     public function index()
     {
-        //
+        $tasks = Task::all();
+        return view('tasks.index', compact('tasks'));
     }
 
     /**
@@ -23,7 +28,7 @@ class TaskController extends Controller
      */
     public function create()
     {
-        //
+        return view('tasks.create');
     }
 
     /**
@@ -32,9 +37,14 @@ class TaskController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTask $request)
     {
-        //
+        
+        $request->user()->tasks()->create([
+            'name' => $request->name,
+        ]);
+
+        return redirect('/tasks');
     }
 
     /**
@@ -54,9 +64,9 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Task $task)
     {
-        //
+        return view('tasks/edit', compact('task'));
     }
 
     /**
@@ -66,9 +76,16 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTask $request, Task $task)
     {
-        //
+        
+        $this->authorize('update', $task);
+        
+        $task->name = $request->name;
+        $task->save();
+
+        return redirect('tasks');  
+
     }
 
     /**
@@ -77,8 +94,13 @@ class TaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user, Task $task)
     {
-        //
+        $this->authorize('destroy', $task); #kierm tra authorize hay k
+        $task->delete();
+        
+        return response()->json([
+            'message' => 'Data deleted successfully!',
+        ], 200);
     }
 }
