@@ -20,3 +20,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::group([
+    'middleware'=>'auth',
+],function(){
+    Route::resource('tasks', 'TaskController',[
+        'index' => 'tasks.index',
+        'store' => 'tasks.store',
+        'create' => 'tasks.create',
+        'update' => 'tasks.update',
+        'edit' => 'tasks.edit',
+        'destroy' => 'tasks.destroy',
+    ])->except('show');
+});
