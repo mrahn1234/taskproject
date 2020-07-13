@@ -15,6 +15,7 @@
         </tr>
         @each('tasks.task_item', $tasks, 'task')
     </table>
+    {{$tasks->links()}}
 </div>
 
 @endsection

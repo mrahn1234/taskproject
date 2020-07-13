@@ -6,14 +6,12 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ trans('auth.verify_email') }}</div>
-
                 <div class="card-body">
                     @if (session('resent'))
                     <div class="alert alert-success" role="alert">
                         {{ trans('A fresh verification link has been sent to your email address.') }}
                     </div>
                     @endif
-
                     {{ trans('auth.check_before_proceeding') }}
                     {{ trans('auth.failed_email') }},
                     <form class="d-inline" method="POST" action="{{ route('verification.resend') }}">
